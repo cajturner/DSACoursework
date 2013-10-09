@@ -7,9 +7,9 @@ public class HashDictionary implements Dictionary {
 	public HashDictionary(StringHashCode sH, float lF) {
 		// TODO Auto-generated constructor stub
 	}
-	public HashDictionary(){
-		
-	}
+	
+	public HashDictionary()throws DictionaryException{}
+	
 	@Override
 	public void insert(String key) throws DictionaryException {
 		// TODO Auto-generated method stub

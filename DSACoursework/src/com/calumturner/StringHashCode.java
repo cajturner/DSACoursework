@@ -10,7 +10,11 @@ public class StringHashCode implements HashCode {
 		
 		if(o==null)return -1;					//if the input object is null return -1;
 		
-		String s = (String)o;					//cast object o to a string
+		return HornersRule((String.valueOf((o))));
+		
+	}
+	
+	private int HornersRule(String s){
 		int hCode=s.charAt(s.length()-1);		//assign hCode to the value of the last char of the string
 		int i = s.length()-2;					
 		while(i>=0){
@@ -19,7 +23,8 @@ public class StringHashCode implements HashCode {
 			i--;
 		}
 		return hCode;
-		
 	}
+	
+	
 
 }

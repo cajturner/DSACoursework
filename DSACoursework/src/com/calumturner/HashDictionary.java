@@ -4,15 +4,19 @@ import java.util.Iterator;
 
 public class HashDictionary implements Dictionary {
 
+	private float loadF;
+	StringHashCode hashCode;
 	public HashDictionary(StringHashCode sH, float lF) {
-		// TODO Auto-generated constructor stub
+		loadF= lF;
+		hashCode= hashCode;
 	}
 	
 	public HashDictionary()throws DictionaryException{}
 	
 	@Override
 	public void insert(String key) throws DictionaryException {
-		// TODO Auto-generated method stub
+		int hCode = hashCode.giveCode(key);
+		
 		
 	}
 	@Override
@@ -34,6 +38,9 @@ public class HashDictionary implements Dictionary {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	private 
+	
 	
 
 }

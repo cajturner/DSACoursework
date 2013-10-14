@@ -18,7 +18,7 @@ public class HashDictionary implements Dictionary {
 	@Override
 	public void insert(String key) throws DictionaryException {
 		if(isOverLoaded(numElements+1))increaseTable();
-		int hCode = hashCode.giveCode(key);
+		int hCode = compressKey(hashCode.giveCode(key));//compress hashCode
 		
 		
 	}
@@ -48,7 +48,7 @@ public class HashDictionary implements Dictionary {
 		while(!isPrime(tableSize))//Recur through odd numbers till a prime number is located.
 			tableSize+=2;
 		String newTable[] = table;
-		table= new String[tableSize]; //Set table to new prime number size
+		table= new String[tableSize-1]; //Set table to new prime number size 0-(prime number-1).
 	
 		for(int i=0;i<table.length;i++){ //Reinsert all the odd values into the new sized hash table
 			try {
@@ -78,11 +78,8 @@ public class HashDictionary implements Dictionary {
 		
 	}
 	
-	private int compressKey(){
-		
-		
-		
-		return 0;		
+	private int compressKey(int hashKey){
+		return (5*hashKey+33)%(table.length-1);//MAD compression
 	}
 	
 	

@@ -1,7 +1,7 @@
 package com.calumturner;
 
 public class StringHashCode implements HashCode {
-	static int CONSTANT = 33;
+	static int CONSTANT = 7;
 	
 	//
 	@Override
@@ -15,13 +15,15 @@ public class StringHashCode implements HashCode {
 	}
 	
 	private int HornersRule(String s){
+		System.out.println(s+" -- ");
 		int hCode=s.charAt(s.length()-1);		//assign hCode to the value of the last char of the string
 		int i = s.length()-2;					
 		while(i>=0){
 			hCode=(hCode*CONSTANT) +s.charAt(i);	// p=p*a+s[i] Horner's rule
-			System.out.println(""+hCode);
+		
 			i--;
 		}
+		System.out.println(""+hCode);
 		return hCode;
 	}
 	

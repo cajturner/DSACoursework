@@ -22,26 +22,35 @@ public class HashDictionary implements Dictionary {
 	}
 	
 	@Override
-	public void insert(String value) {
+	public void insert(String value) throws DictionaryException {
 		totOps++;
 		if(isOverLoaded(numElements+1))increaseTable();
 		int hCode = hashCode.giveCode(value);//compress hashCode.
 		int c = compressKey(hCode);
-		System.out.println(""+c);
 		if(table[c]==null){
 			table[c]=value; //If no value has had that key insert.
 			numElements++;
 			return;
 		}
+		if(table[c].equals(AVAILABLE)){
+			table[c]=value;
+			return;
+		}
 		int doubleCode= compressDoubleHash(hCode); // creates a new hashcode
-		for(int j=0; j<numElements-1; j++){
+		for(int j=0; j<table.length-1; j++){
 			totProb++;
 			int dCompress = doubleHash(compressKey(hCode),doubleCode,j); //double hashes
-			if(table[dCompress]==null){ //checks if new element is empty
+			if(table[dCompress]==null||table[dCompress].equals(AVAILABLE)){ //checks if new element is empty
+				if(table[dCompress]==null){
+					numElements++;
+				}
 				table[dCompress]=value;
-				numElements++;
+				
+				return;
 			}
+			
 		}	
+		throw new DictionaryException("Not inserted");
 	}
 	@Override
 	public void remove(String key) throws DictionaryException {
@@ -50,19 +59,18 @@ public class HashDictionary implements Dictionary {
 		int compressKey =compressKey(hCode);
 		
 		if(table[compressKey]==null)throw new DictionaryException(key +" was not found, so not removed.");
-		else if(table[compressKey]==key){
+		if(table[compressKey].equals(key)){
 			table[compressKey]=AVAILABLE;
-			numElements--;
 			return;
-		}else{			
+		}else{
 			int dCode = compressDoubleHash(hCode);
-			for(int j=0; j<numElements-1; j++){
+			for(int j=0; j<table.length-1; j++){
 				totProb++;
 				int dCompress = doubleHash(compressKey(hCode),dCode,j);
 				if(table[dCompress]==null) throw new DictionaryException(key +" was not found, so not removed.");
-				if(table[dCompress]==key){
+				if(table[dCompress].equals(key)){
 					table[dCompress]=AVAILABLE;
-					numElements--;
+					return;
 				}
 			}
 			throw new DictionaryException(key +" was not found, so not removed.");	
@@ -71,20 +79,20 @@ public class HashDictionary implements Dictionary {
 		
 	}
 	@Override
-	public boolean find(String key) {
+	public boolean find(String key) {//not working
 		totOps++;
 		int hCode = hashCode.giveCode(key);
 		int compressKey = compressKey(hCode);
 		
-		if(table[compressKey]==key)return true;
-		if(table[compressKey]==null)return false;
+		if(table[compressKey].equals(key)){return true;}
+		if(table[compressKey]==null){return false;}
 		
 		int dCode = compressDoubleHash(hCode);
 		for(int j=0; j<numElements-1; j++){
 			totProb++;
 			int dCompress = doubleHash(compressKey(hCode),dCode,j);
 			if(table[dCompress]==null)return false;
-			if(table[dCompress]==key)return true;
+			if(table[dCompress].equals(key))return true;
 		}
 		return false;
 	}
@@ -98,18 +106,21 @@ public class HashDictionary implements Dictionary {
 		return (float)totProb/totOps;
 	}
 	
-	private void increaseTable(){
+	private void increaseTable() {
 		int tableSize = table.length*2; //Start looking for the next prime number double the size of the old size.
 		tableSize++;//Make it odd
 		while(!isPrime(tableSize))//Recur through odd numbers till a prime number is located.
 			tableSize+=2;
 		String newTable[] = table;
-		table= new String[tableSize-1]; //Set table to new prime number size 0-(prime number-1).
+		table= new String[tableSize]; //Set table to new prime number size 0-(prime number-1).
 		numElements=0;
-	
-		for(int i=0;i<table.length;i++){ //Reinsert all the odd values into the new sized hash table
-			if(table[i]==null || table[i]==AVAILABLE)continue;
-			insert(newTable[i]);			
+		for(int i=0;i<newTable.length;i++){ //Reinsert all the odd values into the new sized hash table
+			if(newTable[i]==null || newTable[i]==AVAILABLE)continue;
+			try {
+				insert(newTable[i]);
+			} catch (DictionaryException e) {
+				e.printStackTrace();
+			}			
 		}
 		
 	}
@@ -132,7 +143,7 @@ public class HashDictionary implements Dictionary {
 	}
 	
 	private int compressKey(int hashKey){
-		return (5*hashKey+33)%(table.length);//MAD compression
+		return (((17*hashKey)+40)%table.length);//MAD compression
 	}
 	
 	private int compressDoubleHash(int hashKey){
@@ -141,7 +152,7 @@ public class HashDictionary implements Dictionary {
 	}
 	
 	private int doubleHash(int hCode,int doubleCode, int j){
-		return ((hCode+(j*doubleCode))%numElements);
+		return ((hCode+(j*doubleCode))%table.length);
 	}
 	
 	

@@ -3,9 +3,9 @@ import java.io.File;
 import java.io.*;
 import java.util.Iterator;
 
-public class TestHashDictionary {
+public class TestHashDictionary  {
   
-    public static void main(String[] args) {
+    public static void main(String[] args)  throws DictionaryException{
 
 	// Test 1: try empty constructor
 	try
@@ -60,8 +60,14 @@ public class TestHashDictionary {
 	 Integer temp = new Integer(0);
 	 for (int k = 0; k < 200; ++k) {
 	     s = (new Integer(k)).toString();
-	     h.insert("R"+s+"C"+s);
+	     try {
+			h.insert("R"+s+"C"+s);
+		} catch (DictionaryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	 }
+	 
 	boolean fail = false;
 	for (int k = 0; k < 200; ++k) {
 	    s = (new Integer(k)).toString();
@@ -158,6 +164,7 @@ public class TestHashDictionary {
 	}
 
     }
+    
     
 }
     

@@ -40,6 +40,7 @@ public class spell {
             		letterSub(word);
             		letterOmi(word);
             		letterIns(word);
+            		letterRev(word);
             	}
             }
            
@@ -100,8 +101,16 @@ public class spell {
          private static void letterRev(String word){
         	 if(word.length()==1)return;
         	 StringBuffer s;
-        	 for(int i=0;i<word.length();i++){
-        		 
+        	 for(int i=0;i<word.length()-1;i++){
+        		 s= new StringBuffer(word);
+        		 char temp = s.charAt(i);
+        		 s.setCharAt(i, s.charAt(i+1));
+        		 s.setCharAt(i+1, temp);
+        		 if(hDict.find(s.toString())){
+    				 	wordsDict.insert(s.toString());
+    				 	System.out.println(s.toString());
+    				 
+    			 	}
         	 }
         	 
         	 

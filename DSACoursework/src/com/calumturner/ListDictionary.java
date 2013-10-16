@@ -10,13 +10,13 @@ public class ListDictionary implements Dictionary{
 	}
 
 	@Override
-	public void insert(String key) throws DictionaryException {
-		ll.add(key);
+	public void insert(String key) {
+		if(!find(key))ll.add(key);//If value is not in dict add it
 	}
 
 	@Override
-	public void remove(String key) throws DictionaryException {
-		ll.remove(key);
+	public void remove(String key) throws DictionaryException  {
+		if(!ll.remove(key))throw new DictionaryException(key+ " was not found in the linked list, so was not removed.");
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class ListDictionary implements Dictionary{
 	}
 
 	@Override
-	public Iterator<String> elements() {
+	public Iterator<String> iterator() {
 		return	ll.iterator();	
 		
 	}

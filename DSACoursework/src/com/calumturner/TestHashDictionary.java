@@ -1,5 +1,4 @@
 package com.calumturner;
-import java.io.File;
 import java.io.*;
 import java.util.Iterator;
 
@@ -60,12 +59,9 @@ public class TestHashDictionary  {
 	 Integer temp = new Integer(0);
 	 for (int k = 0; k < 200; ++k) {
 	     s = (new Integer(k)).toString();
-	     try {
+	     
 			h.insert("R"+s+"C"+s);
-		} catch (DictionaryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	 }
 	 
 	boolean fail = false;
@@ -123,7 +119,7 @@ public class TestHashDictionary  {
 	{
 	    fail = true;
 	}
-        Iterator it = h.elements();
+        Iterator<String> it = h.iterator();
 	int count = 0;
 
 	while (it.hasNext()){
@@ -162,8 +158,15 @@ public class TestHashDictionary  {
                                + " time in milseconds is "+ time);
 	    lF = lF+ (float) 0.05;
 	}
+	
+	
+	
+	
+
 
     }
+    
+    
     
     
 }

@@ -3,7 +3,7 @@ package com.calumturner;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class HashDictionary implements Dictionary {
+public class HashDictionary implements Dictionary, Iterable<String> {
 	private final String AVAILABLE="%%%%%";
 	private String[] table = new String[7];
 	private int numElements;
@@ -22,10 +22,12 @@ public class HashDictionary implements Dictionary {
 	}
 	
 	@Override
-	public void insert(String value) throws DictionaryException {
+	public void insert(String value) {
 		totOps++;
+		if(find(value))return;//Vaule is already in the dictionary
 		if(isOverLoaded(numElements+1))increaseTable();
 		int hCode = hashCode.giveCode(value);//compress hashCode.
+		
 		int c = compressKey(hCode);
 		if(table[c]==null){
 			table[c]=value; //If no value has had that key insert.
@@ -50,7 +52,6 @@ public class HashDictionary implements Dictionary {
 			}
 			
 		}	
-		throw new DictionaryException("Not inserted");
 	}
 	@Override
 	public void remove(String key) throws DictionaryException {
@@ -61,6 +62,7 @@ public class HashDictionary implements Dictionary {
 		if(table[compressKey]==null)throw new DictionaryException(key +" was not found, so not removed.");
 		if(table[compressKey].equals(key)){
 			table[compressKey]=AVAILABLE;
+			numElements--;
 			return;
 		}else{
 			int dCode = compressDoubleHash(hCode);
@@ -70,6 +72,7 @@ public class HashDictionary implements Dictionary {
 				if(table[dCompress]==null) throw new DictionaryException(key +" was not found, so not removed.");
 				if(table[dCompress].equals(key)){
 					table[dCompress]=AVAILABLE;
+					numElements--;
 					return;
 				}
 			}
@@ -83,9 +86,9 @@ public class HashDictionary implements Dictionary {
 		totOps++;
 		int hCode = hashCode.giveCode(key);
 		int compressKey = compressKey(hCode);
-		
-		if(table[compressKey].equals(key)){return true;}
 		if(table[compressKey]==null){return false;}
+		if(table[compressKey].equals(key)){return true;}
+		
 		
 		int dCode = compressDoubleHash(hCode);
 		for(int j=0; j<numElements-1; j++){
@@ -98,9 +101,13 @@ public class HashDictionary implements Dictionary {
 	}
 	
 	@Override
-	public Iterator<String> elements() {
-		return Arrays.asList(table).iterator();
+	public Iterator<String> iterator() {
+		
+		return new TableIterator();
 	}
+				
+	
+	
 	
 	public float averNumProbes() {
 		return (float)totProb/totOps;
@@ -116,11 +123,9 @@ public class HashDictionary implements Dictionary {
 		numElements=0;
 		for(int i=0;i<newTable.length;i++){ //Reinsert all the odd values into the new sized hash table
 			if(newTable[i]==null || newTable[i]==AVAILABLE)continue;
-			try {
+			
 				insert(newTable[i]);
-			} catch (DictionaryException e) {
-				e.printStackTrace();
-			}			
+					
 		}
 		
 	}
@@ -143,16 +148,54 @@ public class HashDictionary implements Dictionary {
 	}
 	
 	private int compressKey(int hashKey){
-		return (((17*hashKey)+40)%table.length);//MAD compression
+		int comp =(((17*hashKey)+40)%table.length);
+		if(comp<0)comp=comp*-1;
+		return comp;//MAD compression
 	}
 	
 	private int compressDoubleHash(int hashKey){
-		int i= ((table.length-1)-(hashKey%(table.length-1)));
+		int i= (5-(hashKey%5));
 		return i;
 	}
 	
 	private int doubleHash(int hCode,int doubleCode, int j){
 		return ((hCode+(j*doubleCode))%table.length);
+	}
+
+	
+	private class TableIterator implements Iterator<String>{
+		private int currentPos=-1;
+		@Override
+		public boolean hasNext() {
+			int nextPos = currentPos+1;
+			while(nextPos<=table.length-1){
+				if(table[nextPos]!=null&&!(table[nextPos].equals(AVAILABLE)))return true;
+				nextPos++;
+			}
+			return false;
+		}
+
+		@Override
+		public String next() {
+			int nextPos = currentPos+1;
+			while(nextPos<=table.length-1){
+				if(table[nextPos]!=null&&!(table[nextPos].equals(AVAILABLE))){
+					currentPos=nextPos;
+					return table[currentPos];
+				}
+				nextPos++;
+			}
+			return null;
+		}
+
+		@Override
+		public void remove() {
+			if(table[currentPos]==null)return;
+			table[currentPos]=AVAILABLE;
+			return;
+			
+		}
+		
 	}
 	
 	

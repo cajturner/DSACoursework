@@ -22,7 +22,6 @@ public class StringHashCode implements HashCode {
 		
 			i--;
 		}
-		if(hCode<0)hCode=-hCode;
 		return hCode;
 	}
 	

@@ -16,7 +16,8 @@ public interface Dictionary {
     
    
     // Returns iterator object over all elements stored in the dictionary
-    public Iterator elements();
+    //Renamed this iterator for simplicity
+    public Iterator iterator();
 
 }
 

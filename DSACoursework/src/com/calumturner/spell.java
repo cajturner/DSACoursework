@@ -8,6 +8,7 @@ public class spell {
     private static HashDictionary wordsDict;
           
     public static void main(String[] args) throws java.io.IOException{
+    	long startTime= System.currentTimeMillis();
 //         if (args.length != 2 ) {
 //            System.out.println("Usage: spell dictionaryFile.txt inputFile.txt ");
 //            System.exit(0);
@@ -52,6 +53,8 @@ public class spell {
             System.out.println("Check your file name");
             System.exit(0);
         } 
+         long endTime = System.currentTimeMillis();
+         System.out.println(args[0]+" - "+args[1]+" --> "+(endTime-startTime));
          
     }
          private static void letterSub(String word){

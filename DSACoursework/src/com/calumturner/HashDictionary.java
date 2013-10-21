@@ -29,6 +29,7 @@ public class HashDictionary implements Dictionary, Iterable<String> {
 		int hCode = hashCode.giveCode(value);//compress hashCode.
 		
 		int c = compressKey(hCode);
+		totProb++;
 		if(table[c]==null){
 			table[c]=value; //If no value has had that key insert.
 			numElements++;
@@ -39,7 +40,7 @@ public class HashDictionary implements Dictionary, Iterable<String> {
 			return;
 		}
 		int doubleCode= compressDoubleHash(hCode); // creates a new hashcode
-		for(int j=0; j<table.length-1; j++){
+		for(int j=1; j<table.length-1; j++){
 			totProb++;
 			int dCompress = doubleHash(compressKey(hCode),doubleCode,j); //double hashes
 			if(table[dCompress]==null||table[dCompress].equals(AVAILABLE)){ //checks if new element is empty
@@ -58,7 +59,7 @@ public class HashDictionary implements Dictionary, Iterable<String> {
 		totOps++;
 		int hCode = hashCode.giveCode(key);
 		int compressKey =compressKey(hCode);
-		
+		totProb++;		
 		if(table[compressKey]==null)throw new DictionaryException(key +" was not found, so not removed.");
 		if(table[compressKey].equals(key)){
 			table[compressKey]=AVAILABLE;
@@ -66,7 +67,7 @@ public class HashDictionary implements Dictionary, Iterable<String> {
 			return;
 		}else{
 			int dCode = compressDoubleHash(hCode);
-			for(int j=0; j<table.length-1; j++){
+			for(int j=1; j<table.length-1; j++){
 				totProb++;
 				int dCompress = doubleHash(compressKey(hCode),dCode,j);
 				if(table[dCompress]==null) throw new DictionaryException(key +" was not found, so not removed.");
@@ -86,12 +87,13 @@ public class HashDictionary implements Dictionary, Iterable<String> {
 		totOps++;
 		int hCode = hashCode.giveCode(key);
 		int compressKey = compressKey(hCode);
+		totProb++;
 		if(table[compressKey]==null){return false;}
 		if(table[compressKey].equals(key)){return true;}
 		
 		
 		int dCode = compressDoubleHash(hCode);
-		for(int j=0; j<numElements-1; j++){
+		for(int j=1; j<numElements-1; j++){
 			totProb++;
 			int dCompress = doubleHash(compressKey(hCode),dCode,j);
 			if(table[dCompress]==null)return false;
@@ -114,8 +116,7 @@ public class HashDictionary implements Dictionary, Iterable<String> {
 	}
 	
 	private void increaseTable() {
-		int tableSize = table.length*2; //Start looking for the next prime number double the size of the old size.
-		tableSize++;//Make it odd
+		int tableSize = (table.length*2)+1; //Start looking for the next prime number double the size of the old size. Add 1 to make it odd
 		while(!isPrime(tableSize))//Recur through odd numbers till a prime number is located.
 			tableSize+=2;
 		String newTable[] = table;

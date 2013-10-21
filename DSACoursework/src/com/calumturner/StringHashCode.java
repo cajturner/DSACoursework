@@ -1,14 +1,14 @@
 package com.calumturner;
 
 public class StringHashCode implements HashCode {
-	static int CONSTANT = 7;
+	static int CONSTANT = 33;
 	
-	//
+	
 	@Override
 	public int giveCode(Object o) {
-		// Polynomial accumulation, Lecture 5
+		// Polynomial accumulation
 		
-		if(o==null)return -1;					//if the input object is null return -1;
+		if(o==null)return -1;//if the input object is null return -1;
 		
 		return HornersRule((String.valueOf((o))));
 		
@@ -19,7 +19,6 @@ public class StringHashCode implements HashCode {
 		int i = s.length()-2;					
 		while(i>=0){
 			hCode=(hCode*CONSTANT) +s.charAt(i);	// p=p*a+s[i] Horner's rule
-		
 			i--;
 		}
 		return hCode;

@@ -6,37 +6,36 @@ public class spell {
    
 	private static HashDictionary hDict;
     private static HashDictionary wordsDict;
-          
+
     public static void main(String[] args) throws java.io.IOException{
     	long startTime= System.currentTimeMillis();
-//         if (args.length != 2 ) {
-//            System.out.println("Usage: spell dictionaryFile.txt inputFile.txt ");
-//            System.exit(0);
-//         }
-    		BufferedInputStream dict,file;
+    	//If input arguments is not 2 print out error and exit.
+        if (args.length != 2 ) {
+        	System.out.println("Usage: spell dictionaryFile.txt inputFile.txt ");
+            System.exit(0);
+        }
+        
+    	BufferedInputStream dict,file;
          
-         try{
-           
-         //   dict  = new BufferedInputStream(new FileInputStream(args[0]));
-         //   file  = new BufferedInputStream(new FileInputStream(args[1]));
-	    // To read from specific files, comment the 2 lines above and 
-            // uncomment 2 lines below 
-            dict  = new BufferedInputStream(new FileInputStream("C:\\d1.txt"));
-            file  = new BufferedInputStream(new FileInputStream("C:\\checkText.txt"));
-            
-         // Load all the words from dictionary into dictionary data structure 
+        try{
+        	//Initialise input streams and Dictionaries
+        	dict  = new BufferedInputStream(new FileInputStream(args[0]));
+            file  = new BufferedInputStream(new FileInputStream(args[1]));
             StringHashCode sHCode = new StringHashCode();
-             hDict = new HashDictionary(sHCode,(float) 0.9);
-             wordsDict = new HashDictionary(sHCode, (float)0.9);
-			
+            hDict = new HashDictionary(sHCode,(float) 0.9);
+            wordsDict = new HashDictionary(sHCode, (float)0.9);
+            
+            // Load all the words from dictionary into dictionary data structure 
             FileWordRead reader = new FileWordRead(dict);
             while(reader.hasNextWord()){
             	hDict.insert(reader.nextWord());
             }
+            
+            //Read word for word from text file
             reader = new FileWordRead(file);
             while(reader.hasNextWord()){
             	String word = reader.nextWord();
-            	System.out.println(word);
+            	//Check if the words not in the dictionary and try to change it to match dictionary words
             	if(!hDict.find(word)){
             		letterSub(word);
             		letterOmi(word);
@@ -44,35 +43,39 @@ public class spell {
             		letterRev(word);
             	}
             }
-           
-			
-          // Load in each word from tested file and check the words
          
          }
-         catch (IOException e){ // catch exceptions caused by file input/output errors
+         catch (IOException e){ // Catch exceptions caused by file input/output errors
             System.out.println("Check your file name");
+            e.printStackTrace();
             System.exit(0);
         } 
          long endTime = System.currentTimeMillis();
          System.out.println(args[0]+" - "+args[1]+" --> "+(endTime-startTime));
          
     }
+    	/**
+    	 * Goes over all the characters in the String word and tries to replace them with 
+    	 * any other character, if a new word is found, insert it to the word dictionary.
+    	 * @param String word. A word not in the dictionary.
+    	 *      
+    	 */
          private static void letterSub(String word){
-        	 StringBuffer s ;
+        	 StringBuffer s;
         	 for(int i=0;i<word.length();i++){
         		 s= new StringBuffer(word);
         		 for(int j=0;j<26;j++){
         			 s.setCharAt(i, (char)(97+j));
-        			 if(hDict.find(s.toString())){
-        				 wordsDict.insert(s.toString());
-        				 System.out.println(s.toString());
-        				 
-        			 }
-        			 
+        			 if(hDict.find(s.toString())) wordsDict.insert(s.toString()); 	 
         		 }
         	 }
         	 
          }
+         /**
+          * Removes one character from the String word and checks if the new word is in the
+          *	dictionary, if so add to word dictionary.
+          * @param String word. A word not in the dictionary.
+          */
          private static void letterOmi(String word){
         	 if(word.length()==1)return;
         	 char[] wordChars = word.toCharArray();
@@ -87,20 +90,28 @@ public class spell {
         		 if(hDict.find(newWord))wordsDict.insert(newWord);
         	 }
          }
+         /**
+          * Inserts all in succession before, between and after each character for String word. If any
+          * new words match to the dictionary. Add new word to word dictionary.
+          * @param String word. A word not in the dictionary. 
+          */
          private static void letterIns(String word){
         	StringBuffer s;
         	for(int i=0;i<=word.length();i++){
         		for(int j=0;j<26;j++){
         			s= new StringBuffer(word);
         			s.insert(i, (char)(97+j));
-        			if(hDict.find(s.toString())){
-       				 	wordsDict.insert(s.toString());
-       				 	System.out.println(s.toString());
-       				 
-       			 	}
+        			if(hDict.find(s.toString()))wordsDict.insert(s.toString()); 
         		}
         	}
          }
+         
+         /** 
+          * Swaps pairs of characters within String word. If any new words match
+          * to the dictionary. Add new word to word dictionary.
+          * 
+          * @param String word. A word not in the dictionary.
+          */
          private static void letterRev(String word){
         	 if(word.length()==1)return;
         	 StringBuffer s;
@@ -109,11 +120,7 @@ public class spell {
         		 char temp = s.charAt(i);
         		 s.setCharAt(i, s.charAt(i+1));
         		 s.setCharAt(i+1, temp);
-        		 if(hDict.find(s.toString())){
-    				 	wordsDict.insert(s.toString());
-    				 	System.out.println(s.toString());
-    				 
-    			 	}
+        		 if(hDict.find(s.toString()))wordsDict.insert(s.toString());  	
         	 }
         	 
         	 

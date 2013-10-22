@@ -5,13 +5,11 @@
 /* Finally, to read a word, use:  String nextWord = readWords.nextWord();                                  */ 
 package com.calumturner;
 
-import java.io.File;
 import java.io.*;
 
 public class FileWordRead{
     private BufferedInputStream in;
     private String nextWord;
-    private StringBuffer buf;
     private boolean endOfFile;
 
     public FileWordRead(BufferedInputStream inFile) throws java.io.IOException

@@ -231,7 +231,7 @@ public class HashDictionary implements Dictionary, Iterable<String> {
 		private int currentPos=-1;
 		
 		/**
-		 * 
+		 * Steps through the array and returns true if a value is found.
 		 * @return Boolean. True if there is another value in the array
 		 */
 		@Override
@@ -245,8 +245,8 @@ public class HashDictionary implements Dictionary, Iterable<String> {
 		}
 
 		/**
-		 * 
-		 * @return String of the next element in the array
+		 * Returns the next element in the array
+		 * @return String of the next element in the array, null if no more elements are found.
 		 */
 		@Override
 		public String next() {

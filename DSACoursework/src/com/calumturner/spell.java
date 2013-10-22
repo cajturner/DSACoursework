@@ -50,9 +50,15 @@ public class spell {
             e.printStackTrace();
             System.exit(0);
         } 
-         long endTime = System.currentTimeMillis();
-         System.out.println(args[0]+" - "+args[1]+" --> "+(endTime-startTime));
-         
+        //Iterates through all the elements in the words dictionary and prints them out
+        Iterator<String> it =wordsDict.iterator();
+        System.out.println("Suggested words:");
+        while(it.hasNext()){
+        	System.out.println(it.next());
+        }
+        System.out.println("---------------");
+        long endTime = System.currentTimeMillis();
+        System.out.println(args[0]+" -> "+args[1]+". Running time: "+(endTime-startTime));  
     }
     	/**
     	 * Goes over all the characters in the String word and tries to replace them with 
@@ -68,8 +74,7 @@ public class spell {
         			 s.setCharAt(i, (char)(97+j));
         			 if(hDict.find(s.toString())) wordsDict.insert(s.toString()); 	 
         		 }
-        	 }
-        	 
+        	 } 
          }
          /**
           * Removes one character from the String word and checks if the new word is in the
@@ -121,10 +126,7 @@ public class spell {
         		 s.setCharAt(i, s.charAt(i+1));
         		 s.setCharAt(i+1, temp);
         		 if(hDict.find(s.toString()))wordsDict.insert(s.toString());  	
-        	 }
-        	 
-        	 
-        	 
+        	 }	 
          }
     
 }
